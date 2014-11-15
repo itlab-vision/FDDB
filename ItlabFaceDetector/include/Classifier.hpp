@@ -5,5 +5,9 @@ using namespace cv;
 class FaceClassifier
 {
 public:
+	FaceClassifier();
+
     virtual int Classify(Mat img) = 0;
+
+    virtual ~FaceClassifier();
 };
