@@ -5,7 +5,7 @@
 
 using namespace std;
 
-void FaceDetector::Detect(Mat img, vector<Rect> &results, FaceClassifier *classifier, Size windowSize, double scale)
+void FaceDetector::Detect(Mat img, vector<Rect> &results, FaceClassifier *classifier, Size windowSize, int dx, int dy, double scale)
 {
 	results.clear();
 	//fill image pyramid
@@ -34,9 +34,9 @@ void FaceDetector::Detect(Mat img, vector<Rect> &results, FaceClassifier *classi
 	for (int i = 0; i < imgPyramid.size(); i++)
 	{
 		Mat layer = imgPyramid[i];
-		for (int x = 0; x < layer.cols - windowSize.width; x++)
+		for (int y = 0; y < layer.rows - windowSize.height; y += dy)
 		{
-			for (int y = 0; y < layer.rows - windowSize.height; y++)
+			for (int x = 0; x < layer.cols - windowSize.width; x += dx)
 			{
 				Rect rect(x, y, windowSize.width, windowSize.height);
 				Mat window = layer(rect);

@@ -27,7 +27,7 @@ int main()
 	//Ptr<FaceClassifier> classiefier = new TestClassifier();
 	FaceClassifier *classiefier = new TestClassifier();
 
-	detector.Detect(img, rects, classiefier, Size(20, 20), 1.2);
+	detector.Detect(img, rects, classiefier, Size(20, 20), 2, 2, 1.2);
 
 	cout << "Count annotated rects is " << rects.size() << endl;
 	cout << "It's test Faces Detector." << endl;
