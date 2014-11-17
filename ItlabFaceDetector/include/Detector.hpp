@@ -9,5 +9,5 @@ using namespace cv;
 class FaceDetector
 {
 public:
-    void Detect(Mat img, vector<Rect> &results, FaceClassifier *classifier, Size windowSize = Size(20, 20), int dx = 1, int dy = 1, double scale = 1.2);    
+    void Detect(Mat img, vector<Rect> &results, Classifier *classifier, Size windowSize = Size(20, 20), int dx = 1, int dy = 1, double scale = 1.2);    
 };

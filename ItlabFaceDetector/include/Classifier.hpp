@@ -2,12 +2,12 @@
 
 using namespace cv;
 
-class FaceClassifier
+class Classifier
 {
 public:
-	FaceClassifier();
+	Classifier();
 
-    virtual int Classify(Mat img) = 0;
+    virtual float Classify(const Mat& img) = 0;
 
-    virtual ~FaceClassifier();
+    virtual ~Classifier();
 };
