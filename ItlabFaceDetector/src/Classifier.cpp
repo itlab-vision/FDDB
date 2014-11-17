@@ -1,11 +1,11 @@
 #include "Classifier.hpp"
 
-FaceClassifier::FaceClassifier()
+Classifier::Classifier()
 {
 
 }
 
-FaceClassifier::~FaceClassifier()
+Classifier::~Classifier()
 {
-	
+    
 }

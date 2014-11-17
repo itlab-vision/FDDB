@@ -4,7 +4,7 @@ set(PROJECT_NAME FaceDetector)
 project(${PROJECT_NAME})
 
 if (CMAKE_COMPILER_IS_GNUCXX)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall")
 endif()
 
 find_package(OpenCV REQUIRED)

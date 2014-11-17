@@ -1,13 +1,11 @@
 #include <opencv2/core.hpp>
 
-using namespace cv;
-
 class Classifier
 {
 public:
-	Classifier();
+    Classifier();
 
-    virtual float Classify(const Mat& img) = 0;
+    virtual int Classify(const cv::Mat &img) = 0;
 
     virtual ~Classifier();
 };
