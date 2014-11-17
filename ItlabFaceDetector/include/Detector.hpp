@@ -1,3 +1,6 @@
+#ifndef _DETECTOR_HPP_
+#define _DETECTOR_HPP_
+
 #include "Classifier.hpp"
 #include <vector>
 #include <opencv2/core.hpp>
@@ -9,3 +12,5 @@ public:
                 const cv::Ptr<Classifier> classifier, cv::Size windowSize = cv::Size(20, 20), 
                 int dx = 1, int dy = 1, double scale = 1.2);    
 };
+
+#endif

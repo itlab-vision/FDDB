@@ -1,3 +1,6 @@
+#ifndef _CLASSIFIER_HPP_
+#define _CLASSIFIER_HPP_
+
 #include <opencv2/core.hpp>
 
 class Classifier
@@ -9,3 +12,5 @@ public:
 
     virtual ~Classifier();
 };
+
+#endif
