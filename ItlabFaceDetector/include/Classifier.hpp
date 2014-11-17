@@ -1,13 +1,11 @@
 #include <opencv2/core.hpp>
 
-using namespace cv;
-
-class FaceClassifier
+class Classifier
 {
 public:
-	FaceClassifier();
+    Classifier();
 
-    virtual int Classify(Mat img) = 0;
+    virtual int Classify(const cv::Mat &img) = 0;
 
-    virtual ~FaceClassifier();
+    virtual ~Classifier();
 };
