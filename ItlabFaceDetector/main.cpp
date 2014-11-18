@@ -1,8 +1,9 @@
 #include <iostream>
-#include <opencv2/highgui/highgui.hpp>
 #include <cstdlib>
 
-#include "Detector.hpp"
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+
 #include "DigitClassifier.hpp"
 
 using namespace std;
@@ -10,13 +11,10 @@ using namespace cv;
 
 int main()
 {
-	Mat img = imread("test.jpg", 1);
-	
-	DigitClassifier *classifier = new Classifier();
-	float result = classifier->Classify(img);
+	Mat img = imread("1.png", 0);
 
-	if (result == 0.0f) {
-		imshow("Test passed", img);
-	}
+    Ptr<Classifier> classifier = Ptr<Classifier>(new DigitClassifier());
+	int result = classifier->Classify(img);
+
 	return 0;
 }
