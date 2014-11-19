@@ -6,6 +6,7 @@ extern "C" {
 }
 
 using namespace cv;
+using namespace std;
 
 void report_errors(lua_State *L, int status)
 {
@@ -15,12 +16,12 @@ void report_errors(lua_State *L, int status)
   }
 }
 
-int DigitClassifier::Classify(const Mat& img) {
+Result DigitClassifier::Classify(const Mat& img) {
 	lua_State *L = lua_open();
 
     luaL_openlibs(L);
 
-    const char *file = "file.lua";
+    const char *file = "/home/artem/projects/itlab/itlab-vision-faces-detection/ItlabFaceDetector/scripts/file.lua";
 
     int s = luaL_dofile(L, file);
     if (s != 0) report_errors(L, s);
@@ -33,22 +34,27 @@ int DigitClassifier::Classify(const Mat& img) {
         for (int j = 0; j < img.cols; ++j) {
             lua_pushinteger(L, i * img.cols + j + 1);
             lua_pushinteger(L, img.at<uchar>(i, j));
+            //std::cout << (int)img.at<uchar>(i, j) << " " ;
             lua_settable(L, -3);
         }
     }
-
+    //cout << "s = " << s << endl;
     if ( s==0 ) {
       // execute Lua program
-      s = lua_pcall(L, 1, LUA_MULTRET, 0);
+      s = lua_pcall(L, 1, 2, 0);
     } else report_errors(L, s);
 
     // result
-    std::cout << "File file.lua return " << std::endl;
+    //std::cout << "File file.lua return " << std::endl;
+    Result result;
     while (lua_gettop(L)) {
-    	std::cout << lua_tostring(L, -1) << std::endl;
+    	//std::cout << lua_tostring(L, -1) << std::endl;
+        result.confidence = lua_tonumber(L, -1);
     	lua_pop(L, 1);
+        result.label =  lua_tointeger(L, -1);
+        lua_pop(L, 1);
     }
-
+    //cout << result.label << " " << result.confidence << endl;
     lua_close(L);
-	return 0;
+	return result;
 }

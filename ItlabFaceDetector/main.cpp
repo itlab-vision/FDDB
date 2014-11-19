@@ -14,7 +14,9 @@ int main()
 	Mat img = imread("1.png", 0);
 
     Ptr<Classifier> classifier = Ptr<Classifier>(new DigitClassifier());
-	int result = classifier->Classify(img);
+	Result result = classifier->Classify(img);
+
+	cout <<"It's " << result.label << " with confidence = " << result.confidence << endl;
 
 	return 0;
 }

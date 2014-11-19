@@ -3,12 +3,18 @@
 
 #include <opencv2/core.hpp>
 
+struct Result
+{
+	int label;
+	float confidence;
+};
+
 class Classifier
 {
 public:
     Classifier();
 
-    virtual int Classify(const cv::Mat &img) = 0;
+    virtual Result Classify(const cv::Mat &img) = 0;
 
     virtual ~Classifier();
 };

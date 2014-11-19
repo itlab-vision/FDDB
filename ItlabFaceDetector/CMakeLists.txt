@@ -33,6 +33,7 @@ set(LUA_LIBRARY ${Lua_LIBS})
 add_executable(main ${SOURCE_EXE})
 
 add_subdirectory(src)
+add_subdirectory(samples)
 
 target_link_libraries(main ${LIBRARY_DEPS})
 target_link_libraries(main ${FACEDETECTOR_LIBRARY})
