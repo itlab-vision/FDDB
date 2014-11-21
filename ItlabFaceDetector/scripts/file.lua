@@ -1,20 +1,11 @@
--- function set_net(file_net)
--- 	path_to_net = file_net
--- end
-
 require 'torch'
 require 'nn'
 
---require 'cutorch'
---require 'cunn'
+function loadNetModel(path)
+	net = torch.load(path)
+end
 
-function main(img)
-
-	net = torch.load('/home/artem/projects/itlab/itlab-vision-faces-detection/ItlabFaceDetector/net/linear-MNIST.net')
-	-- net = torch.load('/home/dmitry/tmp/net.net')
-
-	--print (img[14])
-
+function predict(img)
 	img = torch.DoubleTensor(img)
 
 	mean = img:mean()
@@ -23,11 +14,11 @@ function main(img)
 	img:add(-mean)
 	img:div(std)
 
-	output = net:forward(img)
+	output = net:forward(img:view(1, 28, 28))
 
-	min = output:min()
+	max = output:max()
 	for i=1,10 do
-		if output[i] == min then
+		if output[i] == max then
 			j = i
 			break
 		end
@@ -36,5 +27,5 @@ function main(img)
 	--print(output)
 
 	if j == 10 then j = 0 end
-	return j, -min
+	return j, -max
 end

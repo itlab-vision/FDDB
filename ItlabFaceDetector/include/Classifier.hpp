@@ -1,7 +1,7 @@
 #ifndef _CLASSIFIER_HPP_
 #define _CLASSIFIER_HPP_
 
-#include <opencv2/core.hpp>
+#include <opencv2/core/core.hpp>
 
 struct Result
 {
