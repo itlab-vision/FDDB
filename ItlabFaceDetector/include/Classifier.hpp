@@ -7,6 +7,7 @@ struct Result
 {
 	int label;
 	float confidence;
+	float confidence2;
 };
 
 class Classifier

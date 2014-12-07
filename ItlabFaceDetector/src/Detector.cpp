@@ -43,10 +43,12 @@ void Detector::Detect(const Mat &img, vector<int> &labels, vector<float> &scores
                 Mat window = layer(rect);
 
                 Result result = classifier->Classify(window);
-                if (fabs(result.confidence) < DETECTOR_THRESHOLD)
+                //if (fabs(result.confidence) < DETECTOR_THRESHOLD)
+                if (fabs(result.confidence) == 0)
                 {
+                    //cout << result.confidence << endl;
                     labels.push_back(result.label);
-                    scores.push_back(result.confidence);
+                    scores.push_back(result.confidence2);
                 
                     rect.x *= newScale;
                     rect.y *= newScale;
