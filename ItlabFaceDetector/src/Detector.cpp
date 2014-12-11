@@ -1,5 +1,6 @@
 #include "Detector.hpp"
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/objdetect/objdetect.hpp>
 
@@ -9,7 +10,8 @@ using namespace cv;
 using namespace std;
 
 void Detector::Detect(const Mat &img, vector<int> &labels, vector<float> &scores, vector<Rect> &rects, 
-                      Ptr<Classifier> classifier, Size windowSize, int dx, int dy, double scale, bool groupRect)
+                      Ptr<Classifier> classifier, Size windowSize, int dx, int dy, double scale,
+                      int minNeighbors, bool groupRect)
 {
     CV_Assert(scale > 1.0 && scale <= 2.0);
 
@@ -44,24 +46,20 @@ void Detector::Detect(const Mat &img, vector<int> &labels, vector<float> &scores
 
                 Result result = classifier->Classify(window);
                 //if (fabs(result.confidence) < DETECTOR_THRESHOLD)
-                if (fabs(result.confidence) == 0)
+                if (fabs(result.confidence) == 0 && result.label == 1)
                 {
                     //cout << result.confidence << endl;
                     labels.push_back(result.label);
-                    scores.push_back(result.confidence2);
-                
-                    rect.x *= newScale;
-                    rect.y *= newScale;
-                    rect.width *= newScale;
-                    rect.height *= newScale;
+                    scores.push_back(result.confidence);
 
-                    layerRect.push_back(rect);
+                    layerRect.push_back( Rect(cvRound(rect.x * newScale), cvRound(rect.y * newScale), 
+                                              cvRound(rect.width * newScale), cvRound(rect.height * newScale)) );
                 }
             }
         }
         if (groupRect)
         {
-            groupRectangles(layerRect, 1, 0.2);
+            groupRectangles(layerRect, minNeighbors, 0.2);
         }
         rects.insert(rects.end(), layerRect.begin(), layerRect.end());
         newScale *= scale;

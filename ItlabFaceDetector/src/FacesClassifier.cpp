@@ -14,7 +14,7 @@ FacesClassifier::FacesClassifier()
     if (s != 0) reportLuaErrors(L, s);
 
     lua_getglobal(L, "loadNetModel");
-    lua_pushstring(L, "/net/model.net");
+    lua_pushstring(L, "/net/CNN3-face.net");
     s = lua_pcall(L, 1, 0, 0);
     if (s != 0) reportLuaErrors(L, s);
 }
@@ -39,27 +39,29 @@ Result FacesClassifier::Classify(const Mat& img)
     // Push data
     lua_newtable(L);
     int countChannel = 3;
-    for (int i = 0; i < img.rows; ++i) 
-    {
-        for (int j = 0; j < img.cols; ++j) 
-        {
-            for (int k = 0; k < countChannel; ++k)
-            {
+    int countPixels = img.cols * img.rows;
 
-                lua_pushinteger(L, i * img.cols * countChannel + j * countChannel + k + 1);
-                lua_pushinteger(L, img.at<Vec3b>(i, j)[k]);
+    for (int k = 0; k < countChannel; ++k)
+    {
+        for (int i = 0; i < img.rows; ++i) 
+        {
+            for (int j = 0; j < img.cols; ++j) 
+            {
+                lua_pushinteger(L, k * countPixels + i * img.cols + j + 1);
+                lua_pushinteger(L, img.at<Vec3b>(i, j)[2-k]);
                 lua_settable(L, -3);
             }
         }
     }
+    //cout << "asdasd" << flush;
     //call function
-    int s = lua_pcall(L, 1, 3, 0);
+    int s = lua_pcall(L, 1, 2, 0);
     if (s != 0) reportLuaErrors(L, s);
 
     Result result;
     while (lua_gettop(L)) {
-        result.confidence2 = lua_tonumber(L, -1);
-        lua_pop(L, 1);
+        //result.confidence2 = lua_tonumber(L, -1);
+        //lua_pop(L, 1);
         result.confidence = lua_tonumber(L, -1);
     	lua_pop(L, 1);
         result.label =  lua_tointeger(L, -1);

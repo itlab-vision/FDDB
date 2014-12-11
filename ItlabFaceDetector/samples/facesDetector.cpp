@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
+#include <sstream>
 
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -8,12 +9,22 @@
 #include "Detector.hpp"
 #include "FacesClassifier.hpp"
 
+ #include <stdio.h>
+    #define TIMER_START(name) int64 t_##name = getTickCount()
+    #define TIMER_END(name) printf("TIMER_" #name ":\t%6.2fms\n", \
+                1000.f * ((getTickCount() - t_##name) / getTickFrequency()))
+
 using namespace std;
 using namespace cv;
 
 int readArguments(int argc, char **argv, string &imgFilename, string &outRectFilename);
 void readLfw(const string &filename, const string &origImgDir, vector<Mat> &images);
 void readNeg(const string &filename, vector<Mat> &images);
+void testClassifier(int numClass);
+void testDetector(Mat &img, bool fGroupRect = false);
+void testDetectorFDDB(const string &imgsFilename, const string &outFacesFilename, bool fGroupRect);
+void testClassifierFDDB(const string &fliename);
+void EllipseToRect(double majorRadius, double minorRadius, double angle, double x, double y, Rect &rect);
 
 string pathToImages = "/home/artem/projects/itlab/faces/originalPics/";
 
@@ -25,16 +36,99 @@ string helper =
 
 int main(int argc, char** argv)
 {
-	/*
-	string imgsFilename;
-    string outFacesFilename;
-    if (readArguments(argc, argv, imgsFilename, outFacesFilename) != 0)
-    {
-        cout << helper << endl;
-        return 1;
-    }
+	string imgsFilename = "/home/artem/projects/itlab/faces/FDDB-folds/FDDB-fold-01.txt";
+    string outFacesFilename = "/home/artem/projects/itlab/faces/torchResult/fold-01-out.txt";
+    //if (readArguments(argc, argv, imgsFilename, outFacesFilename) != 0)
+    //{
+    //    cout << helper << endl;
+    //    return 1;
+    //}
+    //testDetectorFDDB(imgsFilename, outFacesFilename);
+    
+	TIMER_START(all);
+	Mat img = imread("/imgs/back.jpg", IMREAD_COLOR);
+	testDetector(img, false);
+	TIMER_END(all);
+	
+	imwrite("result_back.jpg", img);
+	//testClassifierFDDB("/home/artem/projects/itlab/faces/FDDB-folds/FDDB-fold-01-ellipseList.txt");
+	//testClassifier(2);
+	//waitKey(0);
+	return 0;
+}
 
-    //EllipseFileToRectFile(imgsFilename);
+
+void EllipseToRect(double majorRadius, double minorRadius, double angle, double x, double y, Rect &rect)
+{
+    RotatedRect rotRect(Point2f(x, y), Size(2.0 * minorRadius, 2.0 * majorRadius), angle);
+    rect = rotRect.boundingRect();
+}
+
+void testClassifierFDDB(const string &filename)
+{
+	ifstream in(filename);
+	Ptr<Classifier> classifier = Ptr<Classifier>(new FacesClassifier());
+	Detector detector;
+	int i = 0;
+	while (!in.eof())
+    {
+        string str;
+        in >> str;
+        if (str.empty())
+        {
+            break;
+        }
+
+        int count = 0;
+        in >> count;
+
+        double majorRadius, minorRadius, angle, x, y;
+        int score;
+        Mat img = imread(pathToImages + str + ".jpg", IMREAD_COLOR);
+        vector<Rect> rightRects;
+        for (int i = 0; i < count; i++)
+        {
+            in >> majorRadius >> minorRadius >> angle >> x >> y >> score;
+            Rect rect;
+            EllipseToRect(majorRadius, minorRadius, angle, x, y, rect);   
+            if (rect.x > 0 && rect.y > 0)
+            {
+            	rightRects.push_back(rect);
+            }
+            cout << rect.x << " " << rect.y << " " << rect.width << " " << rect.height << endl;
+        }
+
+        Mat faceImg = img(rightRects[0]);
+        const double windowSize = 32.0;
+        double coef = 0.0;
+        if (rightRects[0].height < rightRects[0].width)
+          	coef = rightRects[0].height;
+        else
+           	coef = rightRects[0].width;
+        double scale = 32.0 / coef;
+        resize(faceImg, faceImg, Size(), scale, scale);
+        
+        vector<Rect> rects;
+		vector<float> scores;
+		vector<int> labels;
+		bool fGroupRect = false;
+		detector.Detect(faceImg, labels, scores, rects, classifier, Size(32, 32), 1, 1, 1.2, 3, fGroupRect);
+		cout << faceImg.cols << " " << faceImg.rows << endl;
+		for (int i = 0; i < rects.size(); i++)
+			rectangle(faceImg, rects[i], Scalar(255, 0, 0));
+		cout << str << endl;
+		stringstream s;
+		s << i;
+		imwrite("/home/artem/testClas/" + s.str() + ".jpg", faceImg);
+		i++;
+		if (i > 30)
+			break;
+    }
+    in.close();
+}
+
+void testDetectorFDDB(const string &imgsFilename, const string &outFacesFilename, bool fGroupRect)
+{
     vector<string> imgFilenames;
     ifstream in(imgsFilename.data());
     while (!in.eof())
@@ -55,31 +149,25 @@ int main(int argc, char** argv)
     for (int i = 0; i < imgFilenames.size(); i++)
     {
     	Mat img = imread(pathToImages + imgFilenames[i] + ".jpg", IMREAD_COLOR);
-    	
     	vector<Rect> rects;
 		vector<float> scores;
 		vector<int> labels;
-    	detector.Detect(img, labels, scores, rects, classifier, Size(32, 32), 5, 5, 1.2, true);
-    	cout << rects.size() << endl;
-    	for (int i = 0; i < rects.size(); i++)
-		{
-			if (labels[i] == 1)
-				rectangle(img, rects[i], Scalar(0, 0, 255));
-		}
-		imshow("asd", img);
-    	out << imgFilenames[i] << endl;
+
+		detector.Detect(img, labels, scores, rects, classifier, Size(32, 32), 2, 2, 1.2, fGroupRect);
+
+		out << imgFilenames[i] << endl;
         out << rects.size() << endl;
         for (int j = 0; j < rects.size(); j++)
         {
             out << rects[j].x << " " << rects[j].y << " "
-                << rects[j].width << " " << rects[j].height << " " << scores[j] << endl;
+                << rects[j].width << " " << rects[j].height << " " << scores[i] << endl;
         }
-    }*/
-	/*
-	Mat img = imread("/imgs/00007.jpg", IMREAD_COLOR);
-	Mat img2;
-	img.copyTo(img2);
+    }
+    out.close();
+}
 
+void testDetector(Mat &img, bool fGroupRect)
+{
 	Ptr<Classifier> classifier = Ptr<Classifier>(new FacesClassifier());
 	
 	Detector detector;
@@ -87,48 +175,39 @@ int main(int argc, char** argv)
 	vector<float> scores;
 	vector<int> labels;
 
-	detector.Detect(img2, labels, scores, rects, classifier, Size(32, 32), 1, 1, 1.2, false);
+	detector.Detect(img, labels, scores, rects, classifier, Size(32, 32), 2, 2, 1.2, 3, fGroupRect);
 
 	for (int i = 0; i < rects.size(); i++)
 	{
-		if (labels[i] == 1)
-			rectangle(img, rects[i], Scalar(0, 0, 255));
+		rectangle(img, rects[i], Scalar(0, 0, 255));
 	}
-	cout << "Count rectangles = " << rects.size () << endl;
-	for (int i = 0; i < rects.size(); i++)
-	{
-		cout << labels[i] <<  "  ";
-	}
-	cout << endl;
-	imwrite("result.jpg", img);
-	*/
-	
+	cout << "Faces count = " << rects.size () << endl;
+}
+
+void testClassifier(int numClass)
+{
 	vector<Mat> images;
-	//readLfw("out.txt", "/imgs/lfw/", images);
-	readNeg("/home/artem/projects/itlab/tmp/out.txt", images);
+	if (numClass == 1)
+		readLfw("/imgs/lfw-names.txt", "/imgs/lfw/", images);
+	else if (numClass == 2)
+		readNeg("/home/artem/projects/itlab/tmp/out.txt", images);
 	cout << "reading is done\n";
 	Ptr<Classifier> classifier = Ptr<Classifier>(new FacesClassifier());
 
-	int faces = 0;
-	int notfaces = 0;
+	int error = 0;
 	for (int i = 0; i < images.size(); i++)
 	{
 		Result result = classifier->Classify(images[i]);
-		if (result.label == 1)
+		if (result.label != numClass)
 		{
-			faces++;
-		}
-		else
-		{
-			notfaces++;
+			error++;
+			stringstream s;
+			s << i;	
+			imwrite("/home/artem/testClas/errorNeg/" + s.str() + ".jpg", images[i]);
 		}
 	}
-
-	cout << "Tp Count = " << faces << endl;
-	cout << "Fn count = " << notfaces << endl;
-	
-	waitKey(0);
-	return 0;
+	cout << "Tp count = " << images.size() - error << endl;
+	cout << "Fp count = " << error << endl;
 }
 
 void readNeg(const string &filename, vector<Mat> &images)
@@ -158,12 +237,19 @@ void readLfw(const string &filename, const string &origImgDir, vector<Mat> &imag
 		in >> name >> count;
 		//cout << name << " " << count << endl;
 		//cout << origImgDir + name + "/" + name + "0001.jpg" << endl;
-		Mat img = imread(origImgDir + name + "/" + name + "_0001.jpg", IMREAD_COLOR);
-		
-		if (!img.empty())
+		for (int i = 0; i < count; i++)
 		{
-			resize(img, img, Size(32, 32));
-			images.push_back(img);
+			stringstream ss;
+			ss.width(4);
+			ss.fill('0');
+			ss << i + 1;
+	
+			Mat img = imread(origImgDir + name + "/" + name + "_" + ss.str() + ".jpg", IMREAD_COLOR);
+			if (!img.empty())
+			{
+				resize(img, img, Size(32, 32));
+				images.push_back(img);
+			}
 		}
 		//i++;
 		//if (i > 100)
