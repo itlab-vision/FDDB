@@ -14,7 +14,7 @@ FacesClassifier::FacesClassifier()
     if (s != 0) reportLuaErrors(L, s);
 
     lua_getglobal(L, "loadNetModel");
-    lua_pushstring(L, "/net/CNN3-face.net");
+    lua_pushstring(L, "/net/CNN-face-preproc.net");
     s = lua_pcall(L, 1, 0, 0);
     if (s != 0) reportLuaErrors(L, s);
 }
@@ -40,7 +40,19 @@ Result FacesClassifier::Classify(const Mat& img)
     lua_newtable(L);
     int countChannel = 3;
     int countPixels = img.cols * img.rows;
-
+    //cout << "asd" << img.cols << " " << img.rows << endl;
+    //for (int k = 0; k < countChannel; ++k)
+    //{
+    //    for (int i = 0; i < img.rows; ++i) 
+    //    {
+    //        for (int j = 0; j < img.cols; ++j) 
+    //        {
+    //            lua_pushinteger(L, k * countPixels + i * img.cols + j + 1);
+    //            lua_pushinteger(L, img.at<Vec3b>(i, j)[2-k]);
+    //            lua_settable(L, -3);
+    //        }
+    //    }
+    //}
     for (int k = 0; k < countChannel; ++k)
     {
         for (int i = 0; i < img.rows; ++i) 

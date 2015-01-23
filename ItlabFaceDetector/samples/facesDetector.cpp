@@ -22,11 +22,13 @@ void readLfw(const string &filename, const string &origImgDir, vector<Mat> &imag
 void readNeg(const string &filename, vector<Mat> &images);
 void testClassifier(int numClass);
 void testDetector(Mat &img, bool fGroupRect = false);
-void testDetectorFDDB(const string &imgsFilename, const string &outFacesFilename, bool fGroupRect);
+void testDetectorFDDB(const string &imgsFilename, int numFold, const string &outFacesFilename, bool fGroupRect);
 void testClassifierFDDB(const string &fliename);
 void EllipseToRect(double majorRadius, double minorRadius, double angle, double x, double y, Rect &rect);
 
 string pathToImages = "/home/artem/projects/itlab/faces/originalPics/";
+string pathToFolds = "/home/artem/projects/itlab/faces/FDDB-folds/";
+string pathToResult = "/home/artem/projects/itlab/faces/torchResult/";
 
 string helper =
 "./source <ImageFilename> <OutputFilename>\n\
@@ -38,25 +40,53 @@ int main(int argc, char** argv)
 {
 	string imgsFilename = "/home/artem/projects/itlab/faces/FDDB-folds/FDDB-fold-01.txt";
     string outFacesFilename = "/home/artem/projects/itlab/faces/torchResult/fold-01-out.txt";
+
+    vector<string> filenamesFolds;
+    for (int i = 1; i <= 10; i++)
+    {
+    	stringstream filename;
+    	filename << pathToFolds << "FDDB-fold-";
+    	filename.fill('0');
+    	filename.width(2);
+    	filename << i << ".txt";
+    	filenamesFolds.push_back(filename.str());
+    }
+    vector<string> filenamesResults;
+    for (int i = 1; i <= 10; i++)
+    {
+    	stringstream filename;
+    	filename << pathToResult << "fold-";
+    	filename.fill('0');
+    	filename.width(2);
+    	filename << i << "-out.txt";
+    	filenamesResults.push_back(filename.str());
+    }
+    //for (int i = 0; i < 10; i++)
+    //{
+    //	cout << filenamesResults[i] << endl;
+    //}
     //if (readArguments(argc, argv, imgsFilename, outFacesFilename) != 0)
     //{
     //    cout << helper << endl;
     //    return 1;
     //}
-    //testDetectorFDDB(imgsFilename, outFacesFilename);
     
-	TIMER_START(all);
-	Mat img = imread("/imgs/back.jpg", IMREAD_COLOR);
-	testDetector(img, false);
-	TIMER_END(all);
-	
-	imwrite("result_back.jpg", img);
+    for (int i = 0; i < filenamesFolds.size(); i++)
+    {
+    	testDetectorFDDB(filenamesFolds[i], i + 1, filenamesResults[i], true);
+    }
+    
+	//TIMER_START(all);
+	//Mat img = imread("/imgs/8ss.jpg", IMREAD_COLOR);
+	//testDetector(img, false);
+	//TIMER_END(all);
+	//
+	//imwrite("result_back.jpg", img);
 	//testClassifierFDDB("/home/artem/projects/itlab/faces/FDDB-folds/FDDB-fold-01-ellipseList.txt");
-	//testClassifier(2);
+	//testClassifier(1);
 	//waitKey(0);
 	return 0;
 }
-
 
 void EllipseToRect(double majorRadius, double minorRadius, double angle, double x, double y, Rect &rect)
 {
@@ -111,7 +141,7 @@ void testClassifierFDDB(const string &filename)
         vector<Rect> rects;
 		vector<float> scores;
 		vector<int> labels;
-		bool fGroupRect = false;
+		bool fGroupRect = true;
 		detector.Detect(faceImg, labels, scores, rects, classifier, Size(32, 32), 1, 1, 1.2, 3, fGroupRect);
 		cout << faceImg.cols << " " << faceImg.rows << endl;
 		for (int i = 0; i < rects.size(); i++)
@@ -127,8 +157,12 @@ void testClassifierFDDB(const string &filename)
     in.close();
 }
 
-void testDetectorFDDB(const string &imgsFilename, const string &outFacesFilename, bool fGroupRect)
+void testDetectorFDDB(const string &imgsFilename, int numFold, const string &outFacesFilename, bool fGroupRect)
 {
+	stringstream numFoldStr;
+	numFoldStr << "/home/artem/testClas/fddb/" << numFold << "/";
+	string path = numFoldStr.str();
+
     vector<string> imgFilenames;
     ifstream in(imgsFilename.data());
     while (!in.eof())
@@ -149,19 +183,31 @@ void testDetectorFDDB(const string &imgsFilename, const string &outFacesFilename
     for (int i = 0; i < imgFilenames.size(); i++)
     {
     	Mat img = imread(pathToImages + imgFilenames[i] + ".jpg", IMREAD_COLOR);
+    	Mat tmp;
+    	img.copyTo(tmp);
     	vector<Rect> rects;
 		vector<float> scores;
 		vector<int> labels;
 
-		detector.Detect(img, labels, scores, rects, classifier, Size(32, 32), 2, 2, 1.2, fGroupRect);
+		detector.Detect(img, labels, scores, rects, classifier, Size(32, 32), 2, 2, 1.4, 3, fGroupRect);
 
 		out << imgFilenames[i] << endl;
         out << rects.size() << endl;
         for (int j = 0; j < rects.size(); j++)
         {
             out << rects[j].x << " " << rects[j].y << " "
-                << rects[j].width << " " << rects[j].height << " " << scores[i] << endl;
+                << rects[j].width << " " << rects[j].height << " " << scores[j] << endl;
         }
+
+        for (int j = 0; j < rects.size(); j++)
+		{
+			rectangle(tmp, rects[j], Scalar(0, 0, 255));
+		}
+		stringstream s;
+		s << i;
+		imwrite(path + s.str() + ".jpg", tmp);
+		cout << "It's " << numFold << " fold, image is " << imgFilenames[i] << endl;
+		//cout << "/home/artem/testClas/fddb/" + imgFilenames[i] + ".jpg" << endl;
     }
     out.close();
 }
@@ -175,6 +221,8 @@ void testDetector(Mat &img, bool fGroupRect)
 	vector<float> scores;
 	vector<int> labels;
 
+	//resize(img, img, Size((int)(img.cols / 7.8125), (int)(img.rows / 7.8125)), 0, 0, INTER_LINEAR);
+	//cout << img.cols << " " << img.rows << endl;
 	detector.Detect(img, labels, scores, rects, classifier, Size(32, 32), 2, 2, 1.2, 3, fGroupRect);
 
 	for (int i = 0; i < rects.size(); i++)
@@ -188,9 +236,9 @@ void testClassifier(int numClass)
 {
 	vector<Mat> images;
 	if (numClass == 1)
-		readLfw("/imgs/lfw-names.txt", "/imgs/lfw/", images);
+		readLfw("/imgs/lfw-names.txt", "/imgs/pos/", images);
 	else if (numClass == 2)
-		readNeg("/home/artem/projects/itlab/tmp/out.txt", images);
+		readNeg("/home/artem/projects/itlab/itlab-vision-faces-detection/ItlabFaceDetector/imgs/neg.txt", images);
 	cout << "reading is done\n";
 	Ptr<Classifier> classifier = Ptr<Classifier>(new FacesClassifier());
 
