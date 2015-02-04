@@ -1,11 +1,13 @@
-require 'torch'
-require 'nn'
-require 'image'
+function load_modules()
+    require 'torch'
+    require 'nn'
+    require 'image'
+end
 
 function loadNetModel(path)
 	net = torch.load(path)
 	net = net:float()
-	
+
 	neighborhood = image.gaussian1D(5)
    	normalization = nn.SpatialContrastiveNormalization(1, neighborhood, 1):float()
 end
@@ -37,9 +39,7 @@ function preprocessing(img)
         img[{ i,{},{} }]:add(-mean[i])
     	img[{ i,{},{} }]:div(std[i])
    	end
-   	--print(mean[1], " ", mean[2], " ", mean[3])
-   	--print(std[1], " ", std[2], " ", std[3])
-   	
+
    	for c in ipairs(channels) do
         img[{ {c},{},{} }] = normalization:forward(img[{ {c},{},{} }])
    	end
@@ -70,7 +70,7 @@ function predict2()
 			error = error + 1
 		end
 
-	end	
+	end
 	print("Error = ", error)
 end
 
@@ -106,4 +106,3 @@ function predict(img)
 	--print(output)
 	return j, -max
 end
---predict2()
