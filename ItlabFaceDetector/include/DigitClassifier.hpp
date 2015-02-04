@@ -8,7 +8,7 @@ class DigitClassifier : public Classifier {
 public:
 	DigitClassifier();
 
-    virtual Result Classify(const cv::Mat& img);
+    virtual Result Classify(cv::Mat& img);
 
     virtual ~DigitClassifier();
 private:

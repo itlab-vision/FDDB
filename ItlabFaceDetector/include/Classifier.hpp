@@ -15,7 +15,7 @@ class Classifier
 public:
     Classifier();
 
-    virtual Result Classify(const cv::Mat &img) = 0;
+    virtual Result Classify(cv::Mat &img) = 0;
 
     virtual ~Classifier();
 };

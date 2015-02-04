@@ -44,15 +44,13 @@ void Detector::Detect(const Mat &img, vector<int> &labels, vector<float> &scores
     //create pyramid
     while (tmp.cols >= windowSize.width && tmp.rows >= windowSize.height)
     {
-        resize(tmp, tmp, Size((int)(tmp.cols / scale), (int)(tmp.rows / scale)), 0, 0, INTER_LINEAR);
-        if (!(tmp.cols >= windowSize.width && tmp.rows >= windowSize.height))
-            break;
         imgPyramid.push_back(tmp);
+        resize(tmp, tmp, Size((int)(tmp.cols / scale), (int)(tmp.rows / scale)), 0, 0, INTER_LINEAR);
     }
     //labels.reserve(100000);
     //scores.reserve(100000);
     //rects.reserve(100000);
-    float newScale = scale;
+    float newScale = 1;
     //for every layer of pyramid
     for (int i = 0; i < imgPyramid.size(); i++)
     {
