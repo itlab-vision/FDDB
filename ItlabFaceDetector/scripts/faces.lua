@@ -25,8 +25,11 @@ function preprocessing(img)
    	--local mean = {-0.000024212515815108, 0.00043179346459966, -0.00055251545393477}
    	--local std = {0.31788976333177, 0.1018027835829, 0.097225317979258}
    	--cnn-face-preproc
-   	local mean = {-0.000030917338317801, 0.00044114560185953, -0.00055240759852816}
-   	local std = {0.31813675177978, 0.10214817756977, 0.097131512356802}
+   	--local mean = {-0.000030917338317801, 0.00044114560185953, -0.00055240759852816}
+   	--local std = {0.31813675177978, 0.10214817756977, 0.097131512356802}
+   	--cnn-face-new-neg
+   	local mean = {-0.00014910521235919, 0.00047613368194075, -0.00054976320288719}
+   	local std = {0.3069566982661, 0.096810034332245	, 0.090332393149851	}
    	--local mean = {}
    	--local std = {}
    	for i,channel in ipairs(channels) do
@@ -75,7 +78,9 @@ function predict2()
 end
 
 function predict(img)
+	
 	local maxVal = 255
+	nClock = os.clock()
 	img = torch.FloatTensor(img)
 	--for i = 1, 32*32*3 do
 	--	img[i] = img[i] / 255
@@ -91,11 +96,13 @@ function predict(img)
 	--image.saveJPG("/home/artem/projects/itlab/torch.jpg", tmp)
 
 	img = preprocessing(img)
+	--print("Preproc time = ", (os.clock() - nClock)*1000)
 	--image.saveJPG("/home/artem/projects/itlab/opencv_preproc.jpg", img)
 	--tmp = preprocessing(tmp)
 	--image.saveJPG("/home/artem/projects/itlab/torch_preproc.jpg", tmp)
+	nClock = os.clock()
 	output = net:forward(img)
-
+	--print("Forward time = ", (os.clock() - nClock)*1000)
 	max = output:max()
 	for i=1,2 do
 		if output[i] == max then

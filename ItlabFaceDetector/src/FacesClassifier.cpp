@@ -1,6 +1,11 @@
 #include "FacesClassifier.hpp"
 #include <iostream>
 
+ #include <stdio.h>
+    #define TIMER_START(name) int64 t_##name = getTickCount()
+    #define TIMER_END(name) printf("TIMER_" #name ":\t%6.2fms\n", \
+                1000.f * ((getTickCount() - t_##name) / getTickFrequency()))
+
 using namespace cv;
 using namespace std;
 
@@ -14,7 +19,7 @@ FacesClassifier::FacesClassifier()
     if (s != 0) reportLuaErrors(L, s);
 
     lua_getglobal(L, "loadNetModel");
-    lua_pushstring(L, "/net/CNN-face-preproc.net");
+    lua_pushstring(L, "/net/CNN3-face-new-neg.net");
     s = lua_pcall(L, 1, 0, 0);
     if (s != 0) reportLuaErrors(L, s);
 }
