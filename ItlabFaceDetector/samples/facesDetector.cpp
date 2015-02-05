@@ -77,7 +77,7 @@ int main(int argc, char** argv)
     //}
     
 	
-	Mat img = imread("/imgs/img_716s.jpg", IMREAD_COLOR);
+	Mat img = imread("/imgs/img_506s.jpg", IMREAD_COLOR);
     TIMER_START(all);
 	testDetector(img, false);
 	TIMER_END(all);
