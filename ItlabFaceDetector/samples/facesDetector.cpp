@@ -76,8 +76,9 @@ int main(int argc, char** argv)
     //	testDetectorFDDB(filenamesFolds[i], i + 1, filenamesResults[i], true);
     //}
     
-	TIMER_START(all);
+	
 	Mat img = imread("/imgs/img_506s.jpg", IMREAD_COLOR);
+    TIMER_START(all);
 	testDetector(img, false);
 	TIMER_END(all);
 	
