@@ -1,0 +1,43 @@
+training data, y-channel, mean: -0.000024212515815108 / -2.4212515815108e-05
+training data, y-channel, standard deviation: 0.31788976333177	
+training data, u-channel, mean: 0.00043179346459966	
+training data, u-channel, standard deviation: 0.1018027835829	
+training data, v-channel, mean: -0.00055251545393477	
+training data, v-channel, standard deviation: 0.097225317979258	
+
+test data, y-channel, mean: -4.7234615882068e-05	
+test data, y-channel, standard deviation: 0.31961032045603	
+test data, u-channel, mean: 0.00045377187402876	
+test data, u-channel, standard deviation: 0.10099362425257	
+test data, v-channel, mean: -0.00054973357419354	
+test data, v-channel, standard deviation: 0.097915914223177	
+
+
+cnn-face-preproc
+training data, y-channel, mean: -0.000030917338317801
+training data, y-channel, standard deviation: 0.31813675177978	
+training data, u-channel, mean: 0.00044114560185953	
+training data, u-channel, standard deviation: 0.10214817756977	
+training data, v-channel, mean: -0.00055240759852816	
+training data, v-channel, standard deviation: 0.097131512356802	
+
+test data, u-channel, mean: 0.00042270312183224	
+test data, u-channel, standard deviation: 0.10105809997684	
+test data, y-channel, mean: -1.7886599640655e-05	
+test data, y-channel, standard deviation: 0.31744433753974	
+test data, v-channel, mean: -0.00053826034644361	
+test data, v-channel, standard deviation: 0.096249570377251	
+
+cnn-face-new-neg
+training data, y-channel, mean: -0.00014910521235919	
+training data, y-channel, standard deviation: 0.3069566982661	
+training data, u-channel, mean: 0.00047613368194075	
+training data, u-channel, standard deviation: 0.096810034332245	
+training data, v-channel, mean: -0.00054976320288719	
+training data, v-channel, standard deviation: 0.090332393149851	
+test data, u-channel, mean: 0.00044026787562103	
+test data, u-channel, standard deviation: 0.097677995683785	
+test data, y-channel, mean: -0.00014817894730736	
+test data, y-channel, standard deviation: 0.3093872447844	
+test data, v-channel, mean: -0.00053887029140752	
+test data, v-channel, standard deviation: 0.090691703993557	
