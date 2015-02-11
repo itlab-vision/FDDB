@@ -2,13 +2,15 @@
 
 extern "C" {
 	#include "lua.hpp"
+	#include "luaT.h"
+	#include "TH/TH.h"
 }
 
 class FacesClassifier : public Classifier {
 public:
 	FacesClassifier();
 
-    virtual Result Classify(const cv::Mat& img);
+    virtual Result Classify(cv::Mat& img);
 
     virtual ~FacesClassifier();
 private:

@@ -33,7 +33,7 @@ void DigitClassifier::reportLuaErrors(lua_State *L, int status)
     }
 }
 
-Result DigitClassifier::Classify(const Mat& img) 
+Result DigitClassifier::Classify(Mat& img) 
 {    
     lua_getglobal(L, "predict");
     // Push data

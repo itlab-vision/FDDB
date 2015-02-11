@@ -76,12 +76,14 @@ end
 
 function predict(img)
 	local maxVal = 255
-	img = torch.FloatTensor(img)
+	--print(img[3])
+	--img = torch.FloatTensor(img)
 	--for i = 1, 32*32*3 do
 	--	img[i] = img[i] / 255
 	--end
 	img = torch.reshape(img, 3, 32, 32)
-	img:mul(1 / maxVal)
+	--image.saveJPG("/home/artem/projects/itlab/opencv_preprocqq.jpg", img)
+	--img:mul(1 / maxVal)
 	--img = image.processJPG(img)
 	--filename = "/home/artem/projects/itlab/itlab-vision-faces-detection/ItlabFaceDetector/imgs/Clay_Aiken_0002.jpg"
 	--tmp = image.scale(image.loadJPG(filename), 32, 32, "bilinear")
@@ -91,7 +93,7 @@ function predict(img)
 	--image.saveJPG("/home/artem/projects/itlab/torch.jpg", tmp)
 
 	img = preprocessing(img)
-	--image.saveJPG("/home/artem/projects/itlab/opencv_preproc.jpg", img)
+	
 	--tmp = preprocessing(tmp)
 	--image.saveJPG("/home/artem/projects/itlab/torch_preproc.jpg", tmp)
 	output = net:forward(img)

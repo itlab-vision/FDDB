@@ -71,17 +71,18 @@ int main(int argc, char** argv)
     //    return 1;
     //}
     
-    for (int i = 0; i < filenamesFolds.size(); i++)
-    {
-    	testDetectorFDDB(filenamesFolds[i], i + 1, filenamesResults[i], true);
-    }
+    //for (int i = 0; i < filenamesFolds.size(); i++)
+    //{
+    //	testDetectorFDDB(filenamesFolds[i], i + 1, filenamesResults[i], true);
+    //}
     
-	//TIMER_START(all);
-	//Mat img = imread("/imgs/8ss.jpg", IMREAD_COLOR);
-	//testDetector(img, false);
-	//TIMER_END(all);
-	//
-	//imwrite("result_back.jpg", img);
+	
+	Mat img = imread("/imgs/img_506s.jpg", IMREAD_COLOR);
+    TIMER_START(all);
+	testDetector(img, false);
+	TIMER_END(all);
+	
+	imwrite("result_back.jpg", img);
 	//testClassifierFDDB("/home/artem/projects/itlab/faces/FDDB-folds/FDDB-fold-01-ellipseList.txt");
 	//testClassifier(1);
 	//waitKey(0);
@@ -223,7 +224,7 @@ void testDetector(Mat &img, bool fGroupRect)
 
 	//resize(img, img, Size((int)(img.cols / 7.8125), (int)(img.rows / 7.8125)), 0, 0, INTER_LINEAR);
 	//cout << img.cols << " " << img.rows << endl;
-	detector.Detect(img, labels, scores, rects, classifier, Size(32, 32), 2, 2, 1.2, 3, fGroupRect);
+	detector.Detect(img, labels, scores, rects, classifier, Size(32, 32), 1, 1, 1.2, 3, fGroupRect);
 
 	for (int i = 0; i < rects.size(); i++)
 	{
