@@ -16,10 +16,8 @@ set(Lua_LIBS
 		"/usr/local/lib/lua/5.1/libtorch.so"
 		"/usr/local/lib/lua/5.1/libnn.so"
 	)
-set(Lua_INCL 
-		"/usr/local/include"
-	)
-include_directories(Lua_INCL)
+set(Lua_INCLUDE "/usr/local/include")
+include_directories(Lua_INCLUDE)
 
 set(FACEDETECTOR_LIBRARY ${PROJECT_NAME})
 set(SOURCE_EXE main.cpp)
