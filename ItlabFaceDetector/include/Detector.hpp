@@ -5,7 +5,7 @@
 #include <vector>
 #include <opencv2/core/core.hpp>
 
-const float DETECTOR_THRESHOLD = 0.001f;
+const float DETECTOR_THRESHOLD = 0.5f;
 
 class Detector
 {

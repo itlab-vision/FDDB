@@ -33,7 +33,7 @@ void Detector::Detect(const Mat &img, vector<int> &labels, vector<float> &scores
                       Ptr<Classifier> classifier, Size windowSize, int dx, int dy, double scale,
                       int minNeighbors, bool groupRect, bool preproc)
 {
-    //CV_Assert(scale > 1.0 && scale <= 2.0);
+    CV_Assert(scale > 1.0 && scale <= 2.0);
 
     rects.clear();
     scores.clear();
@@ -56,7 +56,7 @@ void Detector::Detect(const Mat &img, vector<int> &labels, vector<float> &scores
     {
         Mat layer = imgPyramid[i];
         vector<Rect> layerRect;
-        //cout << i << endl;
+
         for (int y = 0; y < layer.rows - windowSize.height + 1; y += dy)
         {
             for (int x = 0; x < layer.cols - windowSize.width + 1; x += dx)
@@ -65,10 +65,8 @@ void Detector::Detect(const Mat &img, vector<int> &labels, vector<float> &scores
                 Mat window = layer(rect);
 
                 Result result = classifier->Classify(window);
-                //if (fabs(result.confidence) < DETECTOR_THRESHOLD)
-                if (fabs(result.confidence) < 0.5f && result.label == 1)
+                if (fabs(result.confidence) < DETECTOR_THRESHOLD && result.label == 1)
                 {
-                    //cout << result.confidence << endl;
                     labels.push_back(result.label);
                     scores.push_back(result.confidence);
 
@@ -84,11 +82,4 @@ void Detector::Detect(const Mat &img, vector<int> &labels, vector<float> &scores
         rects.insert(rects.end(), layerRect.begin(), layerRect.end());
         newScale *= scale;
     }
-    //cout << "atat" << endl;
-    ////cout << rects.size() << endl;
-    //for (int i = 0; i < rects.size(); i++)
-    //{
-    //    cout << scores[i] << endl;
-    //}
-    //cout << scores.size() << endl;
 }
