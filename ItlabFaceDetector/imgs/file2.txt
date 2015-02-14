@@ -1,3 +1,0 @@
-/home/artem/projects/itlab/itlab-vision-faces-detection/ItlabFaceDetector/imgs/Aaron_Peirsol_0003.jpg
-/home/artem/projects/itlab/itlab-vision-faces-detection/ItlabFaceDetector/imgs/Aaron_Peirsol_0004.jpg
-/home/artem/projects/itlab/itlab-vision-faces-detection/ItlabFaceDetector/imgs/img_593s.jpg
