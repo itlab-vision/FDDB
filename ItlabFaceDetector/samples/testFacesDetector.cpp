@@ -44,7 +44,7 @@ int main(int argc, char** argv)
         cout << helper << endl;
         return 1;
     }
-
+    cout << step << " " << scale << " " << groupRect << endl;
     Ptr<Classifier> classifier = Ptr<Classifier>(new FacesClassifier());
     if (mode.compare("-i") == 0)
     {
@@ -202,7 +202,15 @@ int readArguments(int argc, char **argv, vector<string> &filenames, string &resu
         {
             curTypeParam = param;
         }
-        else if (param.compare("-p") == 0)
+        else if (param.compare("--scale") == 0)
+        {
+            curTypeParam = param;
+        }
+        else if (param.compare("--step") == 0)
+        {
+            curTypeParam = param;
+        }
+        else if (param.compare("--grouping") == 0)
         {
             curTypeParam = param;
         }
@@ -226,9 +234,17 @@ int readArguments(int argc, char **argv, vector<string> &filenames, string &resu
             {
                 resultImgsDir = param;
             }
-            else if (curTypeParam.compare("-p") == 0)
+            else if (curTypeParam.compare("--scale") == 0)
             {
-                return 1;
+                scale = atof(param.c_str());
+            }
+            else if (curTypeParam.compare("--step") == 0)
+            {
+                step = atoi(param.c_str());
+            }
+            else if (curTypeParam.compare("--grouping") == 0)
+            {
+                groupRect = (bool)atoi(param.c_str());
             }
             else
             {
