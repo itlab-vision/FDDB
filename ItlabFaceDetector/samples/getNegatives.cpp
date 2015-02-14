@@ -121,7 +121,7 @@ void getBackImg(Mat &img, const vector<Rect> &objRects, vector<Mat> &backImgs)
         {
             Rect rect(x, y, windowSize, windowSize);
             bool flag = false;
-            for (int i = 0; i < objRects.size(); i++)
+            for (uint i = 0; i < objRects.size(); i++)
             {
             	Rect intersecRect = rect & objRects[i];
             	if (intersecRect.width != 0 || intersecRect.height != 0)

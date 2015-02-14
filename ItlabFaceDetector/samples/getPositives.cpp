@@ -84,7 +84,7 @@ int main(int argc, char **argv)
         imwrite(pathToResultImages + annotsFilenames[i], face);
         cout << i << endl;
     }*/
-    for (int i = 0; i < 1/*annotsFilenames.size()*/; i++)
+    for (uint i = 0; i < 1/*annotsFilenames.size()*/; i++)
     {
         cout << pathToImages + annotsFilenames[i] << flush << endl;
         Mat img = imread(pathToImages + annotsFilenames[i], IMREAD_COLOR);

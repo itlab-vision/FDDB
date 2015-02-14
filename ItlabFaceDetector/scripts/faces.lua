@@ -16,6 +16,8 @@ function preprocessing(img)
 	img = img:float()
 	img = image.rgb2yuv(img)
 
+	local channels = {'y','u','v'}
+
    	local mean = {-0.000030917338317801, 0.00044114560185953, -0.00055240759852816}
    	local std = {0.31813675177978, 0.10214817756977, 0.097131512356802}
    	for i,channel in ipairs(channels) do

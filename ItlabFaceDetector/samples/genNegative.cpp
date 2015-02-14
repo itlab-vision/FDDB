@@ -57,15 +57,14 @@ int main(int argc, char **argv)
     //cout << annotsFilenames.size() << flush;
 
     cout << faces.size() << endl;
-    //1051
-    #pragma omp parallel for
-    for (int i = 1999; i < 5049; i++)
+
+    for (uint i = 1; i < annotsFilenames.size(); i++)
     {
         cout << pathToImages + annotsFilenames[i] << flush << endl;
         Mat img = imread(pathToImages + annotsFilenames[i], IMREAD_COLOR);
 
         vector<Rect> rects;
-        vector<float> scores;
+        vector<double> scores;
         vector<int> labels;
         vector<Rect> negatives;
 
@@ -73,7 +72,7 @@ int main(int argc, char **argv)
         Detector detector;
         detector.Detect(img, labels, scores, rects, classifier, Size(32, 32), 1, 1, 1.2, 3, true);
 
-        for (int j = 0; j < rects.size(); j++)
+        for (uint j = 0; j < rects.size(); j++)
         {
             Rect intersecRect = faces[i] & rects[j];
             Rect unionRect = faces[i] | rects[j];
@@ -86,7 +85,7 @@ int main(int argc, char **argv)
             }
         }
 
-        for (int j = 0; j < negatives.size(); j++)
+        for (uint j = 0; j < negatives.size(); j++)
         {
             //rectangle(img, negatives[j], Scalar(0, 0, 255));
             stringstream path;

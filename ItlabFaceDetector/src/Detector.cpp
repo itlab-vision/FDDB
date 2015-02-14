@@ -29,9 +29,9 @@ void Detector::Preprocessing(Mat &img)
     }
 }
 
-void Detector::Detect(const Mat &img, vector<int> &labels, vector<float> &scores, vector<Rect> &rects, 
+void Detector::Detect(const Mat &img, vector<int> &labels, vector<double> &scores, vector<Rect> &rects, 
                       Ptr<Classifier> classifier, Size windowSize, int dx, int dy, double scale,
-                      int minNeighbors, bool groupRect, bool preproc)
+                      int minNeighbors, bool groupRect)
 {
     CV_Assert(scale > 1.0 && scale <= 2.0);
 
@@ -52,7 +52,7 @@ void Detector::Detect(const Mat &img, vector<int> &labels, vector<float> &scores
     //rects.reserve(100000);
     float newScale = 1;
     //for every layer of pyramid
-    for (int i = 0; i < imgPyramid.size(); i++)
+    for (uint i = 0; i < imgPyramid.size(); i++)
     {
         Mat layer = imgPyramid[i];
         vector<Rect> layerRect;

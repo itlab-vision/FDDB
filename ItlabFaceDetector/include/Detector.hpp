@@ -10,10 +10,10 @@ const float DETECTOR_THRESHOLD = 0.5f;
 class Detector
 {
 public:
-    void Detect(const cv::Mat &img, std::vector<int> &labels, std::vector<float> &scores,
+    void Detect(const cv::Mat &img, std::vector<int> &labels, std::vector<double> &scores,
     			std::vector<cv::Rect> &rects,  cv::Ptr<Classifier> classifier, 
     			cv::Size windowSize = cv::Size(20, 20), int dx = 1, int dy = 1, double scale = 1.2,
-    			int minNeighbors = 3, bool groupRect = false, bool preproc = false);  
+    			int minNeighbors = 3, bool groupRect = false);  
 private:
 	void Preprocessing(cv::Mat &img);
 };
