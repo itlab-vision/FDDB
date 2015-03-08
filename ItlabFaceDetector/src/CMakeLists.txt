@@ -7,8 +7,6 @@ add_library(${target} STATIC ${srcs} ${hdrs})
 target_link_libraries(${target} ${LIBRARY_DEPS})
 target_link_libraries(${target} ${Lua_LIBS})
 
-target_link_libraries(${target} luaT TH)
-
 add_custom_command(
     TARGET ${FACEDETECTOR_LIBRARY}
     POST_BUILD

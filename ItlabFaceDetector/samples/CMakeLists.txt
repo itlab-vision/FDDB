@@ -1,7 +1,6 @@
 # get all cpp-files in current directory
 file(GLOB samples_list RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
 
-
 foreach(sample_filename ${samples_list})
   # get file name without extension
   get_filename_component(sample ${sample_filename} NAME_WE)
