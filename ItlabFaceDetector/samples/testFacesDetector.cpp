@@ -3,6 +3,8 @@
 #include <fstream>
 #include <sstream>
 
+#include <omp.h>
+
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
@@ -32,6 +34,8 @@ string helper =
 \t<OutputFilename> - file name contained founded face rectangles in the specific format\n\
 ";
 
+int countProccesedImgs = 0;
+
 int main(int argc, char** argv)
 {
     vector<string> filenames;
@@ -44,7 +48,7 @@ int main(int argc, char** argv)
         cout << helper << endl;
         return 1;
     }
-    cout << step << " " << scale << " " << groupRect << endl;
+    
     Ptr<Classifier> classifier = Ptr<Classifier>(new FacesClassifier());
     if (mode.compare("-i") == 0)
     {
@@ -92,6 +96,7 @@ int main(int argc, char** argv)
             filename << i << ".txt";
             filenamesFolds.push_back(filename.str());
         }
+
         vector<string> filenamesResults;
         for (uint i = 1; i <= 10; i++)
         {
@@ -102,7 +107,7 @@ int main(int argc, char** argv)
             filename << i << "-out.txt";
             filenamesResults.push_back(filename.str());
         }
-
+        
         for (uint i = 0; i < filenamesFolds.size(); i++)
         {
             vector<string> imgFilenames;
@@ -118,7 +123,6 @@ int main(int argc, char** argv)
                 imgFilenames.push_back(filenames[1] + filename + ".jpg");
             }
             in.close();
-
             detectListImages(imgFilenames, classifier, step, scale, minNeighbours, 
                              groupRect, resultDir, resultImgsDir, filenamesResults[i]);
         }
@@ -131,8 +135,6 @@ void detectListImages(vector<string> &filenames, Ptr<Classifier> classifier, int
                       int minNeighbours, bool groupRect, string &resultDir, string &resultImgsDir, 
                       string &resultFilename)
 {    
-    Detector detector;
-
     ofstream out;
     if (resultDir.compare("") != 0)
     {
@@ -143,11 +145,17 @@ void detectListImages(vector<string> &filenames, Ptr<Classifier> classifier, int
     vector<int> labels;
     vector<Rect> rects;
     vector<double> scores;
+    #pragma omp parallel for //shared(countProccesedImgs)
     for (uint i = 0; i < filenames.size(); i++)
     {
+        Detector detector;
+        Ptr<Classifier> classifier1 = Ptr<Classifier>(new FacesClassifier());
         Mat img = imread(filenames[i], IMREAD_COLOR);
 
-        detector.Detect(img, labels, scores, rects, classifier, Size(32, 32), step, step, scale, minNeighbours, groupRect);
+        cout << filenames[i] << " is now proccessed" << endl;
+
+        detector.Detect(img, labels, scores, rects, classifier1, Size(32, 32), step, step, scale, minNeighbours, groupRect);
+
         if (out.is_open())
         {
             out << filenames[i] << endl;
@@ -171,6 +179,9 @@ void detectListImages(vector<string> &filenames, Ptr<Classifier> classifier, int
             resultFilename << filenames[i].substr(startPos, endPos - startPos) << "_" << time(NULL) << ".jpg";
             imwrite(resultImgsDir + resultFilename.str(), img);
         }
+
+        //countProccesedImgs++;
+        //cout << countProccesedImgs << " from 2845" << endl;//?
     }
 
     out.close();

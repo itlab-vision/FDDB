@@ -52,6 +52,7 @@ void Detector::Detect(const Mat &img, vector<int> &labels, vector<double> &score
     //rects.reserve(100000);
     float newScale = 1;
     //for every layer of pyramid
+
     for (uint i = 0; i < imgPyramid.size(); i++)
     {
         Mat layer = imgPyramid[i];
