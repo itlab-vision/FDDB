@@ -126,6 +126,45 @@ int main(int argc, char** argv)
             detectListImages(imgFilenames, classifier, step, scale, minNeighbours, 
                              groupRect, resultDir, resultImgsDir, filenamesResults[i]);
         }
+        
+        /*
+        int ProcNum, ProcRank;
+        MPI_Init(&argc, &argv);
+        MPI_Comm_size(MPI_COMM_WORLD, &ProcNum);
+        MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank); 
+
+        cout << ProcNum << " " << ProcRank << endl;
+
+        stringstream filenameFold;
+        filenameFold << filenames[0] << "FDDB-fold-";
+        filenameFold.fill('0');
+        filenameFold.width(2);
+        filenameFold << i << ".txt";
+
+        stringstream filenameResult;
+        filenameResult << "fold-";
+        filenameResult.fill('0');
+        filenameResult.width(2);
+        filenameResult << i << "-out.txt";
+        
+        vector<string> imgFilenames;
+        ifstream in(filenameFold);
+        while (!in.eof())
+        {
+            string filename;
+            in >> filename;
+            if (filename.empty())
+            {
+                break;
+            }
+            imgFilenames.push_back(filenames[1] + filename + ".jpg");
+        }
+        in.close();
+        detectListImages(imgFilenames, classifier, step, scale, minNeighbours, 
+                         groupRect, resultDir, resultImgsDir, filenameResult);
+
+        MPI_Finalize();
+        */
     }
 
 	return 0;
