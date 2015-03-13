@@ -16,11 +16,11 @@ endif()
 find_package(OpenCV REQUIRED)
 
 set(Lua_LIBS 
-		"/usr/local/lib/libluajit.so"
-		"/usr/local/lib/libluaT.so"
-		"/usr/local/lib/libTH.so"
-		"/usr/local/lib/lua/5.1/libtorch.so"
-		"/usr/local/lib/lua/5.1/libnn.so"
+		"/home/skrebkov_a/torch/install/lib/libluajit.so"
+		"/home/skrebkov_a/torch/install/lib/libluaT.so"
+		"/home/skrebkov_a/torch/install/lib/libTH.so"
+		"/home/skrebkov_a/torch/install/lib/lua/5.1/libtorch.so"
+		"/home/skrebkov_a/torch/install/lib/lua/5.1/libnn.so"
 	)
 set(Lua_INCLUDE "/usr/local/include")
 include_directories(Lua_INCLUDE)
