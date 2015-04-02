@@ -22,7 +22,7 @@ FacesClassifier::FacesClassifier()
     if (s != 0) reportLuaErrors(L, s);
 
     lua_getglobal(L, "loadNetModel");
-    lua_pushstring(L, "/net/CNN-faces.net");
+    lua_pushstring(L, "/net/model.net");
     s = lua_pcall(L, 1, 0, 0);
     if (s != 0) reportLuaErrors(L, s);
 }
